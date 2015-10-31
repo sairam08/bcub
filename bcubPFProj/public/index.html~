@@ -1,0 +1,173 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+
+    <title>My Parse App</title>
+    <meta name="description" content="My Parse App">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.4.2.min.js"></script>-->
+    <script type="text/javascript">
+
+
+    </script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+
+
+            var temp=""
+            var emps=[
+                {id:13,name:"P SIVANNARAYANA",salary:33887},
+                {id:23,name:"V V V S B NARYANA",salary:29823},
+                {id:26,name:"NACHU SRINIVAS",salary:26732},
+                {id:42,name:"G SAI SATYANARYANA",salary:23919},
+                {id:46,name:"M GANGADHRA RAO",salary:23622},
+                {id:50,name:"G SIVA KUMAR",salary:22935},
+                {id:51,name:"Y V K MOHANA RAO",salary:23681},
+                {id:69,name:"K CHALLA RAO",salary:20997},
+                {id:20,name:"P SATHEYYA",salary:30724},
+                {id:21,name:"M SRINIVASA RAO",salary:31990},
+                {id:36,name:"A RAMABABU",salary:25417},
+                {id:22,name:"N UDAYA BHASKARA RAO",salary:29664},
+                {id:35,name:"A V V SESHA SAI",salary:26281},
+                {id:52,name:"N V NARASIMHA RAO",salary:25468},
+                {id:59,name:"P D L SUBBA RAO",salary:22650},
+                {id:68,name:"B V VENKATA RAO",salary:20477},
+                {id:54,name:"G V PHANI",salary:23831},
+            ]
+
+            $.each(emps, function (index,emp) {
+                temp+='<tr> <td>'+ emp.id+'</td><td>'+ emp.name +'</td> <td><input class="emp" type="text" empName="'+emp.name+'"  empID='+ emp.id+' value='+emp.salary+'></td><td><button class="remove">delete</buttonclass></td>t </tr>';
+            })
+            $("#container").html(temp);
+
+            $(".remove").click(function(e){
+                $(this).parent().parent().remove();
+            })
+            $("#addemp").click(function(e){
+
+
+                var name = prompt("Please enter your name", "");
+
+                if (name != null) {
+
+                    var id=prompt("Please enter your pf id", "");
+                    if(id!=null){
+                        var temp='<tr> <td>'+ id+'</td><td>'+ name +'</td> <td><input class="emp" type="text" empName="'+name+'" empID='+ id+' value=0></td><td><button class="remove">delete</buttonclass></td> </tr>';
+                        $("#container").append(temp)
+                    }
+
+                }
+            })
+
+
+            $("#create").click(function(e){
+
+                var link = $('#downloadlink');
+                console.log(link)
+                $('#downloadlink').attr("href",makeTextFile(getData()))
+                //link.href = makeTextFile(getData());
+                //link.click();
+                link.show();
+                link.css("display", "block");
+            })
+        });
+
+
+
+
+
+        var textFile = null;
+        makeTextFile = function (text) {
+            var data = new Blob([text], {type: 'text/plain'});
+
+            // If we are replacing a previously generated file we need to
+            // manually revoke the object URL to avoid memory leaks.
+            if (textFile !== null) {
+                window.URL.revokeObjectURL(textFile);
+            }
+
+            textFile = window.URL.createObjectURL(data);
+            console.log(textFile)
+            return textFile;
+        };
+
+
+
+        function get_values(salary){
+            var temp=[];
+
+            var d=salary>15000?15000:salary;
+            var e=Math.round((salary*12.5/100))
+            var f=e
+            var g=Math.round((d*8.33/100))
+            var h=g
+            var i=f-h
+            var j=i
+
+            return [d,e,f,g,h,i,j]
+
+        }
+
+        function getData() {
+
+            var rows = ""
+
+            $(".emp").each(function (index) {
+
+
+                var name = $(this).attr("empName")
+                var id= $(this).attr("empID")
+                var salary = $(this).val()
+                var row = [id,name, salary]
+                row = row.concat(get_values(salary)).concat([0,0,0,0,0,0]).concat(["","","","","","","","",""])
+
+                row =row.join("#~#");
+                console.log(row);
+
+                rows+=row+"\r\n";
+            });
+
+
+
+            return rows;
+
+        }
+
+
+        function saveData() {
+
+
+        }
+
+    </script>
+</head>
+
+<body>
+
+<div>
+    <table>
+        <thead>
+        <td> id</td>
+        <td>Name</td>
+        <td>Salary</td>
+        </thead>
+        <tbody id="container">
+        </tbody>
+    </table>
+</div>
+
+<button id="create">Create file</button>
+
+<button id="addemp">Add emp</button>
+<div style="display: block;"><a download="pf.txt"  id="downloadlink" style="display: none">Download</a></div>
+
+
+</body>
+
+</html>
